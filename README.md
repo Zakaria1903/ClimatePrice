@@ -1,4 +1,4 @@
-# ClimatePrice Project
+# ClimatePrice 🌊🏠
 
 **Where should you buy property in Paris today to be safe in 2035/2045?**
 
@@ -12,12 +12,12 @@ Built in 4 weeks as a Le Wagon Data Science & AI bootcamp capstone.
 
 ## Features
 
-- Interactive map of ~992 Paris IRIS neighborhoods
-- Investment verdict per zone: Buy / Caution / Avoid
-- Two climate risks: Seine flood exposure (PPRI) + heat island proxy (green space)
-- Climate discount model anchored on academic literature (4-19% flood discounts)
-- Scenario toggles: SSP2 vs SSP5 × 2035 vs 2045 -> watch riverside zones flip
-- Two ML models: XGBoost (risk scoring + price baseline) and K-Means (neighborhood profiles)
+- 🗺️ Interactive map of ~992 Paris IRIS neighborhoods
+- 🚦 Investment verdict per zone: Buy / Caution / Avoid
+- 🌡️ Two climate risks: Seine flood exposure (PPRI) + heat island proxy (green space)
+- 📉 Climate discount model anchored on academic literature (4–19% flood discounts)
+- 🔀 Scenario toggles: SSP2 vs SSP5 × 2035 vs 2045 — watch riverside zones flip
+- 🤖 Two ML models: XGBoost (risk scoring + price baseline) and K-Means (neighborhood profiles)
 
 ## Architecture
 
@@ -34,8 +34,8 @@ data/climateprice_output.geojson
 Streamlit map demo
 ```
 
-The **contract**: `zone_id - geometry - price_m2 - heat_score - flood_score - elevation - dist_seine - n_sales`.
-Models and app depend only on these columns which is why the whole team can develop against the
+The **contract**: `zone_id · geometry · price_m2 · heat_score · flood_score · elevation · dist_seine · n_sales`.
+Models and app depend only on these columns — which is why the whole team can develop against the
 synthetic twin (`01_synthetic_data.py`) before real data lands.
 
 ## Installation
@@ -98,10 +98,10 @@ CI (GitHub Actions) enforces both on every PR. See `ENGINEERING.md` for the full
 |---|---|
 | Geo (zones + join) | ___ |
 | Data (DVF prices) | ___ |
-| Climate (flood + heat) | --- |
+| Climate (flood + heat) | Zakaria |
 | ML / App | ___ |
 
 ## License
 
-MIT - data sources remain under their respective open licenses
+MIT — data sources remain under their respective open licenses
 (IGN, DGFiP/DVF, Géorisques, Ville de Paris).
