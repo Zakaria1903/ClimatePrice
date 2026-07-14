@@ -1,3 +1,29 @@
+# Data (never commit real data — download locally)
+data/
 raw_data/
-raw_data/
-raw_data/
+*.geojson
+*.shp
+*.dbf
+*.shx
+*.prj
+*.cpg
+*.csv
+*.csv.gz
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
