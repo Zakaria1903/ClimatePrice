@@ -16,10 +16,10 @@ Dates assume pitch in the week of Aug 3 — shift everything if the real demo da
 
 | Week | Focus | Milestone (definition of done) |
 |---|---|---|
-| W1 · Jul 13-19 | Downloads + everyone runs the synthetic pipeline | Every teammate has seen the app run locally; pytest green on synthetic |
-| W2 · Jul 20-26 | Each stream delivers its clean layer | Geo: ~992 zones · Data: price/zone, 100k+ rows · Climate: flood + heat scores · ML: app done on synthetic |
-| W3 · Jul 27 - Aug 2 | **The join (critical path)** then switch to real data | `joined.geojson` passes contract tests; full pipeline green on real data; checkpoints validated as a team |
-| W4 · Aug 3-9 | Freeze + pitch | Demo < 3 min, rehearsed twice; jury Q&A ready; tests screenshot in the deck |
+| W1  Jul 13-19 | Downloads + everyone runs the synthetic pipeline | Every teammate has seen the app run locally; pytest green on synthetic |
+| W2  Jul 20-26 | Each stream delivers its clean layer | Geo: ~992 zones · Data: price/zone, 100k+ rows · Climate: flood + heat scores · ML: app done on synthetic |
+| W3  Jul 27 - Aug 2 | **The join (critical path)** then switch to real data | `joined.geojson` passes contract tests; full pipeline green on real data; checkpoints validated as a team |
+| W4  Aug 3-9 | Freeze + pitch | Demo < 3 min, rehearsed twice; jury Q&A ready; tests screenshot in the deck |
 
 ## Dependencies
 
