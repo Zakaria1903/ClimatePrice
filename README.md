@@ -98,10 +98,10 @@ CI (GitHub Actions) enforces both on every PR. See `ENGINEERING.md` for the full
 |---|---|
 | Geo (zones + join) | ___ |
 | Data (DVF prices) | ___ |
-| Climate (flood + heat) | Zakaria |
+| Climate (flood + heat) | --- |
 | ML / App | ___ |
 
 ## License
 
-MIT — data sources remain under their respective open licenses
+MIT - data sources remain under their respective open licenses
 (IGN, DGFiP/DVF, Géorisques, Ville de Paris).
