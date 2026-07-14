@@ -98,9 +98,26 @@ CI (GitHub Actions) enforces both on every PR. See `ENGINEERING.md` for the full
 |---|---|
 | Geo (zones + join) | ___ |
 | Data (DVF prices) | ___ |
-| Climate (flood + heat) | Zakaria |
+| Climate (flood + heat) | --- |
 | ML / App | ___ |
 
+## Data downloads
+
+All source data is public and free. Each teammate downloads locally into `data/`
+(gitignored — never commit real data). The pipeline expects these exact filenames.
+
+| Source | URL | Save as |
+|---|---|---|
+| IGN Contours IRIS (zone polygons) | https://geoservices.ign.fr/contoursiris | `data/CONTOURS-IRIS.shp` (+ .dbf, .shx, .prj, .cpg — keep all together) |
+| DVF geolocalized transactions (2020) | https://files.data.gouv.fr/geo-dvf/latest/csv/2020/departements/75.csv.gz | `data/dvf_75_2020.csv.gz` |
+| DVF geolocalized transactions (2021) | https://files.data.gouv.fr/geo-dvf/latest/csv/2021/departements/75.csv.gz | `data/dvf_75_2021.csv.gz` |
+| DVF geolocalized transactions (2022) | https://files.data.gouv.fr/geo-dvf/latest/csv/2022/departements/75.csv.gz | `data/dvf_75_2022.csv.gz` |
+| DVF geolocalized transactions (2023) | https://files.data.gouv.fr/geo-dvf/latest/csv/2023/departements/75.csv.gz | `data/dvf_75_2023.csv.gz` |
+| DVF geolocalized transactions (2024) | https://files.data.gouv.fr/geo-dvf/latest/csv/2024/departements/75.csv.gz | `data/dvf_75_2024.csv.gz` |
+| Géorisques PPRI (Seine flood polygons) | https://www.georisques.gouv.fr → search Paris PPRI → export shapefile | `data/flood_zones.shp` (+ associated files) |
+| Paris green spaces (heat proxy) | https://opendata.paris.fr → dataset "espaces verts" → GeoJSON export | `data/espaces_verts.geojson` |
+
+**Folder structure once downloaded:**
 ## License
 
 MIT — data sources remain under their respective open licenses
