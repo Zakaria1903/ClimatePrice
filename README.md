@@ -1,4 +1,4 @@
-# ClimatePrice 🌊🏠
+# ClimatePrice
 
 **Where should you buy property in Paris today to be safe in 2035/2045?**
 
@@ -12,12 +12,12 @@ Built in 4 weeks as a Le Wagon Data Science & AI bootcamp capstone.
 
 ## Features
 
-- 🗺️ Interactive map of ~992 Paris IRIS neighborhoods
-- 🚦 Investment verdict per zone: Buy / Caution / Avoid
-- 🌡️ Two climate risks: Seine flood exposure (PPRI) + heat island proxy (green space)
-- 📉 Climate discount model anchored on academic literature (4–19% flood discounts)
-- 🔀 Scenario toggles: SSP2 vs SSP5 × 2035 vs 2045 — watch riverside zones flip
-- 🤖 Two ML models: XGBoost (risk scoring + price baseline) and K-Means (neighborhood profiles)
+- Interactive map of ~992 Paris IRIS neighborhoods
+- Investment verdict per zone: Buy / Caution / Avoid
+- Two climate risks: Seine flood exposure (PPRI) + heat island proxy (green space)
+- Climate discount model anchored on academic literature (4–19% flood discounts)
+- Scenario toggles: SSP2 vs SSP5 × 2035 vs 2045 — watch riverside zones flip
+- Two ML models: XGBoost (risk scoring + price baseline) and K-Means (neighborhood profiles)
 
 ## Architecture
 
