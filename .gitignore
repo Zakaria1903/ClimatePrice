@@ -21,9 +21,18 @@ env/
 .ruff_cache/
 htmlcov/
 .coverage
+.env
+.envrc
 
 # IDE / OS
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
+.envrc
+audits/
+
+# LLM
+CLAUDE*
+audit*
+*.egg*
