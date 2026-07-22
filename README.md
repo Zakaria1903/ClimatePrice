@@ -10,6 +10,22 @@ Built in 4 weeks as a Le Wagon Data Science & AI bootcamp capstone.
 
 ---
 
+## Make commands
+
+```bash
+make install       # pip install -e ".[dev]"
+make download-dvf  # download DVF 75 CSVs (2021–2025) into data/
+make clean-dvf     # remove the downloaded DVF CSVs
+make data          # generate the synthetic twin (data/synthetic.geojson)
+make pipeline      # run 03_pipeline.py
+make run           # data + pipeline + streamlit run 04_app.py
+make test          # pytest
+make lint          # ruff check --fix + ruff format
+```
+
+`download-dvf` only fetches files that are missing — it's safe to re-run after adding a year to
+`DVF_YEARS` in the `Makefile`, it won't re-download what's already in `data/`.
+
 ## Features
 
 - Interactive map of ~992 Paris IRIS neighborhoods
@@ -118,6 +134,22 @@ All source data is public and free. Each teammate downloads locally into `data/`
 | Paris green spaces (heat proxy) | https://opendata.paris.fr → dataset "espaces verts" → GeoJSON export | `data/espaces_verts.geojson` |
 
 **Folder structure once downloaded:**
+
+```
+data/
+├── CONTOURS-IRIS.shp         # + .dbf, .shx, .prj, .cpg
+├── dvf_75_2021.csv.gz
+├── dvf_75_2022.csv.gz
+├── dvf_75_2023.csv.gz
+├── dvf_75_2024.csv.gz
+├── dvf_75_2025.csv.gz
+├── flood_zones.shp           # + associated files
+├── espaces_verts.geojson
+├── synthetic.geojson         # from `make data` / 01_synthetic_data.py
+├── joined.geojson            # from 02_real_data_join.py — THE CONTRACT
+└── climateprice_output.geojson  # from 03_pipeline.py
+```
+
 ## License
 
 MIT — data sources remain under their respective open licenses
