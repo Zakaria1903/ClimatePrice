@@ -45,18 +45,18 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"test_*.py" = ["B011"]     # assert False allowed in tests
+"tests/test_*.py" = ["B011"]     # assert False allowed in tests
 
 [tool.ruff.format]
 quote-style = "double"
 
 # ============================= PYTEST =============================
 [tool.pytest.ini_options]
-testpaths = ["."]
+testpaths = ["tests"]
 python_files = ["test_*.py"]
 addopts = "-v --tb=short"
 
 # ============================ COVERAGE ============================
 [tool.coverage.run]
-omit = ["test_*.py", "01_synthetic_data.py", "04_app.py"]
+omit = ["tests/test_*.py", "src/01_synthetic_data.py", "src/04_app.py"]
 # app excluded: Streamlit UI is checked by eyes, not coverage

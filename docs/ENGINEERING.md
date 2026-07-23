@@ -11,9 +11,9 @@ Rule of thumb throughout: **if a practice costs more than 10 min/week per person
 
 | Layer | What | Where | When it runs |
 |---|---|---|---|
-| Unit | One function, pure logic (formulas, naming, thresholds) | `test_pipeline.py::TestModels` | every commit |
-| Integration / contract | Script outputs respect the data contract (`joined.geojson` columns, types, ranges) | `test_pipeline.py::TestContract` | every commit |
-| Sanity (our "E2E") | Full pipeline output makes real-world sense (riverside band, verdict flips) | `test_pipeline.py::TestSanity` | every commit |
+| Unit | One function, pure logic (formulas, naming, thresholds) | `tests/test_pipeline.py::TestModels` | every commit |
+| Integration / contract | Script outputs respect the data contract (`joined.geojson` columns, types, ranges) | `tests/test_pipeline.py::TestContract` | every commit |
+| Sanity (our "E2E") | Full pipeline output makes real-world sense (riverside band, verdict flips) | `tests/test_pipeline.py::TestSanity` | every commit |
 | Visual E2E | The Streamlit app renders, toggles work, cards open | human, checklist | weekly + before demo |
 
 **What we test:** formulas (discount, verdict thresholds), data contracts, model output bounds, monotonicity (SSP5 ≥ SSP2), sanity of distributions.
@@ -22,7 +22,7 @@ Rule of thumb throughout: **if a practice costs more than 10 min/week per person
 
 **Framework:** pytest only. No unittest, no nose, no plugins beyond pytest-cov.
 
-**Coverage:** measure it (`pytest --cov`), don't worship it. Target ~70% on `03_pipeline.py` and the join logic. 100% coverage of a 4-week MVP is time stolen from the demo. **The real coverage metric: every jury-facing number (price, discount, verdict) has at least one test asserting its bounds.**
+**Coverage:** measure it (`pytest --cov`), don't worship it. Target ~70% on `src/03_pipeline.py` and the join logic. 100% coverage of a 4-week MVP is time stolen from the demo. **The real coverage metric: every jury-facing number (price, discount, verdict) has at least one test asserting its bounds.**
 
 ---
 
@@ -117,7 +117,7 @@ An issue is Done when ALL boxes tick:
 - [ ] `pytest` green locally and in CI
 - [ ] `ruff check` + `ruff format --check` pass (CI enforces)
 - [ ] New formula/threshold → has its own test
-- [ ] Contract change → `test_pipeline.py` CONFIG + docs updated
+- [ ] Contract change → `tests/test_pipeline.py` CONFIG + docs updated
 - [ ] README updated if setup/run steps changed
 - [ ] Feature demonstrated (screenshot or 30s screen-share in Slack)
 
