@@ -1,15 +1,3 @@
-"""climate_layers.py — Climate stream (owner: Zakaria).
-
-Computes the two climate risk layers per IRIS zone:
-  - flood:  flood_score (0-100) + dist_seine (km)   from Géorisques PPRI polygons
-  - heat:   heat_score (30-90)                       from Paris green-space data
-
-Both functions take GeoDataFrames and return plain DataFrames keyed on zone_id,
-so the Geo owner can merge them in 02_real_data_join.py without touching this code.
-
-All geometry math happens in EPSG:2154 (meters). Inputs in any CRS are reprojected.
-"""
-
 import geopandas as gpd
 import numpy as np
 import pandas as pd
