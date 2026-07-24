@@ -13,7 +13,7 @@ Built in 4 weeks as a Le Wagon Data Science & AI bootcamp capstone.
 ## Make commands
 
 ```bash
-make install         # pip install -e ".[dev]"
+make install         # uv sync (venv + pinned deps + dev tools)
 make download-dvf    # download DVF 75 CSVs (2021–2025) into data/
 make clean-dvf       # remove the downloaded DVF CSVs
 make download-green  # download Paris green spaces into data/geo_green.geojson
@@ -66,22 +66,27 @@ synthetic twin (`src/01_synthetic_data.py`) before real data lands.
 
 ```bash
 git clone <repo-url> && cd ClimatePrice
-python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
+uv sync
 ```
+
+`uv sync` creates `.venv/`, picks the Python from `.python-version`, and installs the exact
+versions pinned in `uv.lock` — including the dev tools (ruff, pytest). No manual venv, no
+activation needed: prefix commands with `uv run` (or use the `make` targets, which already do).
+
+If you don't have uv yet: `curl -LsSf https://astral.sh/uv/install.sh | sh`.
 
 ## Running locally
 
 ```bash
 # On synthetic data (works immediately, no downloads):
-python src/01_synthetic_data.py
-python src/03_pipeline.py
-streamlit run 04_app.py
+uv run python src/01_synthetic_data.py
+uv run python src/03_pipeline.py
+uv run streamlit run 04_app.py
 
 # On real data (after downloading the sources — see "Data downloads" below):
-python src/02_real_data_join.py
-python src/03_pipeline.py
-streamlit run 04_app.py
+uv run python src/02_real_data_join.py
+uv run python src/03_pipeline.py
+uv run streamlit run 04_app.py
 ```
 
 Equivalent shortcut for the synthetic path: `make run`.
@@ -89,8 +94,8 @@ Equivalent shortcut for the synthetic path: `make run`.
 ## Tests
 
 ```bash
-pytest                    # 20 tests: contract / models / sanity
-pytest --cov              # optional coverage report
+uv run pytest             # 20 tests: contract / models / sanity
+uv run pytest --cov       # optional coverage report
 ```
 
 Tests skip (not fail) on files not yet produced — run them from day one.
@@ -98,7 +103,7 @@ Tests skip (not fail) on files not yet produced — run them from day one.
 ## Linting
 
 ```bash
-ruff check . --fix && ruff format .
+uv run ruff check . --fix && uv run ruff format .
 ```
 
 CI (GitHub Actions) enforces both on every PR. See `docs/ENGINEERING.md` for the full workflow.

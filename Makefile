@@ -8,7 +8,7 @@ IRIS_URL := https://data.geopf.fr/telechargement/download/CONTOURS-IRIS/CONTOURS
 	synthetic-data pipeline run test lint
 
 install:
-	pip install -e ".[dev]"
+	uv sync
 
 download-dvf: $(DVF_FILES)
 
@@ -38,16 +38,16 @@ data/:
 	mkdir -p $@
 
 synthetic-data: | data/
-	python src/01_synthetic_data.py
+	uv run python src/01_synthetic_data.py
 
 pipeline:
-	python src/03_pipeline.py
+	uv run python src/03_pipeline.py
 
 run: synthetic-data pipeline
-	streamlit run 04_app.py
+	uv run streamlit run 04_app.py
 
 test:
-	pytest
+	uv run pytest
 
 lint:
-	ruff check . --fix && ruff format .
+	uv run ruff check . --fix && uv run ruff format .
