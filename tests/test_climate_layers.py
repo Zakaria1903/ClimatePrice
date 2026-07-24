@@ -10,7 +10,7 @@ import geopandas as gpd
 import pytest
 from shapely.geometry import box
 
-from src.climate_layers import compute_flood_layer, compute_heat_layer
+from climate_layers import compute_flood_layer, compute_heat_layer
 
 M = "EPSG:2154"
 

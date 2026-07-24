@@ -52,7 +52,8 @@ quote-style = "double"
 
 # ============================= PYTEST =============================
 [tool.pytest.ini_options]
-testpaths = ["."]
+testpaths = ["tests"]
+pythonpath = ["src"]
 python_files = ["test_*.py"]
 addopts = "-v --tb=short"
 
