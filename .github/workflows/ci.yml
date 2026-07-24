@@ -34,4 +34,4 @@ jobs:
         run: uv run python src/03_pipeline.py
 
       - name: Run tests (fails on any failure)
-        run: uv run pytest tests/test_pipeline.py -v
+        run: uv run pytest tests/ -v
