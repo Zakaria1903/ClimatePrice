@@ -12,6 +12,7 @@ dependencies = [
     "streamlit",
     "pydeck",
     "pandera>=0.32.1",
+    "matplotlib>=3.10.9",
 ]
 
 [project.optional-dependencies]
