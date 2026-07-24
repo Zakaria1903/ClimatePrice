@@ -1,6 +1,6 @@
 # ClimatePrice — Acceptance checklist (PM)
 
-The manual companion to `test_pipeline.py`. Pytest checks what a machine can check;
+The manual companion to `tests/test_pipeline.py`. Pytest checks what a machine can check;
 this list checks what only a human can judge. Review together at the end of each week.
 
 **Rule: a stream is "done" when its boxes are ticked AND its pytest layer is green.**
@@ -9,8 +9,8 @@ this list checks what only a human can judge. Review together at the end of each
 
 ## Week 1 — Everyone starts, nobody waits
 - [ ] Every teammate has cloned the repo and installed the environment
-- [ ] Every teammate has run `01_synthetic_data.py → 03_pipeline.py → streamlit run 04_app.py` and SEEN the map
-- [ ] `pytest test_pipeline.py` runs green on the synthetic data
+- [ ] Every teammate has run `make run` (or `src/01_synthetic_data.py → src/03_pipeline.py → streamlit run 04_app.py`) and SEEN the map
+- [ ] `pytest` runs green on the synthetic data
 - [ ] All 4 raw datasets downloaded (IRIS, DVF x5 years, Géorisques, espaces verts)
 - [ ] Roadmap shared and every stream owner confirmed their scope
 

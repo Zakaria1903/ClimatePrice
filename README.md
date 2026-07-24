@@ -13,18 +13,26 @@ Built in 4 weeks as a Le Wagon Data Science & AI bootcamp capstone.
 ## Make commands
 
 ```bash
-make install       # pip install -e ".[dev]"
-make download-dvf  # download DVF 75 CSVs (2021–2025) into data/
-make clean-dvf     # remove the downloaded DVF CSVs
-make data          # generate the synthetic twin (data/synthetic.geojson)
-make pipeline      # run 03_pipeline.py
-make run           # data + pipeline + streamlit run 04_app.py
-make test          # pytest
-make lint          # ruff check --fix + ruff format
+make install         # uv sync (venv + pinned deps + dev tools)
+make download-dvf    # download DVF 75 CSVs (2021–2025) into data/
+make clean-dvf       # remove the downloaded DVF CSVs
+make download-green  # download Paris green spaces into data/geo_green.geojson
+make clean-green     # remove data/geo_green.geojson
+make download-iris   # download + extract IRIS zone polygons into data/IRIS_SHAPES.gpkg
+make clean-iris      # remove the downloaded/extracted IRIS files
+make synthetic-data  # generate the synthetic twin (data/synthetic.geojson)
+make pipeline        # run src/03_pipeline.py
+make run             # synthetic-data + pipeline + streamlit run 04_app.py
+make test            # pytest
+make lint            # ruff check --fix + ruff format
 ```
 
 `download-dvf` only fetches files that are missing — it's safe to re-run after adding a year to
 `DVF_YEARS` in the `Makefile`, it won't re-download what's already in `data/`.
+
+`download-iris` downloads the IGN IRIS geopackage archive and runs `src/scripts/extract_iris.py`,
+which extracts it, filters to Paris (`code_iris` starting with `75`), writes `data/IRIS_SHAPES.gpkg`,
+and cleans up the intermediate `.7z`/tmp files.
 
 ## Features
 
@@ -39,10 +47,10 @@ make lint          # ruff check --fix + ruff format
 
 ```
 raw data (IGN, DVF, Géorisques, opendata.paris)
-        │  02_real_data_join.py        ← geospatial join (EPSG:2154 math)
+        │  src/02_real_data_join.py    ← geospatial join (EPSG:2154 math)
         ▼
 data/joined.geojson                    ← THE CONTRACT (8 columns)
-        │  03_pipeline.py              ← XGBoost + K-Means + discount + verdict
+        │  src/03_pipeline.py          ← XGBoost + K-Means + discount + verdict
         ▼
 data/climateprice_output.geojson
         │  04_app.py
@@ -52,35 +60,42 @@ Streamlit map demo
 
 The **contract**: `zone_id · geometry · price_m2 · heat_score · flood_score · elevation · dist_seine · n_sales`.
 Models and app depend only on these columns — which is why the whole team can develop against the
-synthetic twin (`01_synthetic_data.py`) before real data lands.
+synthetic twin (`src/01_synthetic_data.py`) before real data lands.
 
 ## Installation
 
 ```bash
-git clone <repo-url> && cd climateprice
-python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
+git clone <repo-url> && cd ClimatePrice
+uv sync
 ```
+
+`uv sync` creates `.venv/`, picks the Python from `.python-version`, and installs the exact
+versions pinned in `uv.lock` — including the dev tools (ruff, pytest). No manual venv, no
+activation needed: prefix commands with `uv run` (or use the `make` targets, which already do).
+
+If you don't have uv yet: `curl -LsSf https://astral.sh/uv/install.sh | sh`.
 
 ## Running locally
 
 ```bash
 # On synthetic data (works immediately, no downloads):
-python 01_synthetic_data.py
-python 03_pipeline.py
-streamlit run 04_app.py
+uv run python src/01_synthetic_data.py
+uv run python src/03_pipeline.py
+uv run streamlit run 04_app.py
 
-# On real data (after downloading the sources — see ENGINEERING.md):
-python 02_real_data_join.py
-python 03_pipeline.py
-streamlit run 04_app.py
+# On real data (after downloading the sources — see "Data downloads" below):
+uv run python src/02_real_data_join.py
+uv run python src/03_pipeline.py
+uv run streamlit run 04_app.py
 ```
+
+Equivalent shortcut for the synthetic path: `make run`.
 
 ## Tests
 
 ```bash
-pytest                    # 20 tests: contract / models / sanity
-pytest --cov              # optional coverage report
+uv run pytest             # 20 tests: contract / models / sanity
+uv run pytest --cov       # optional coverage report
 ```
 
 Tests skip (not fail) on files not yet produced — run them from day one.
@@ -88,23 +103,29 @@ Tests skip (not fail) on files not yet produced — run them from day one.
 ## Linting
 
 ```bash
-ruff check . --fix && ruff format .
+uv run ruff check . --fix && uv run ruff format .
 ```
 
-CI (GitHub Actions) enforces both on every PR. See `ENGINEERING.md` for the full workflow.
+CI (GitHub Actions) enforces both on every PR. See `docs/ENGINEERING.md` for the full workflow.
 
 ## Folder structure
 
 ```
-├── 01_synthetic_data.py      # synthetic twin generator (contract-identical)
-├── 02_real_data_join.py      # real data cleaning + geospatial join
-├── 03_pipeline.py            # models + formulas + verdicts
+├── src/
+│   ├── 01_synthetic_data.py  # synthetic twin generator (contract-identical)
+│   ├── 02_real_data_join.py  # real data cleaning + geospatial join
+│   ├── 03_pipeline.py        # models + formulas + verdicts
+│   └── scripts/
+│       └── extract_iris.py   # unpacks the IRIS .7z, filters to Paris (used by `make download-iris`)
 ├── 04_app.py                 # Streamlit demo
-├── test_pipeline.py          # pytest suite (contract / models / sanity)
+├── tests/
+│   └── test_pipeline.py      # pytest suite (contract / models / sanity)
 ├── data/                     # generated + downloaded data (gitignored)
-├── ROADMAP.md                # 4-week plan, owners, risks
+├── docs/
+│   ├── ROADMAP.md            # 4-week plan, owners, risks
+│   └── ENGINEERING.md        # engineering practices
 ├── CHECKLIST.md              # weekly acceptance checklist
-├── ENGINEERING.md            # engineering practices
+├── Makefile                  # install / download-* / synthetic-data / pipeline / run / test / lint
 └── pyproject.toml            # deps + ruff + pytest config
 ```
 
@@ -121,33 +142,31 @@ CI (GitHub Actions) enforces both on every PR. See `ENGINEERING.md` for the full
 
 All source data is public and free. Each teammate downloads locally into `data/`
 (gitignored — never commit real data). The pipeline expects these exact filenames.
+Where a `make download-*` target exists, prefer it over the manual steps — it fetches the file
+straight to the right name.
 
-| Source | URL | Save as |
+| Source | Get it via | Save as |
 |---|---|---|
-| IGN Contours IRIS (zone polygons) | https://geoservices.ign.fr/contoursiris | `data/CONTOURS-IRIS.shp` (+ .dbf, .shx, .prj, .cpg — keep all together) |
-| DVF geolocalized transactions (2020) | https://files.data.gouv.fr/geo-dvf/latest/csv/2020/departements/75.csv.gz | `data/dvf_75_2020.csv.gz` |
-| DVF geolocalized transactions (2021) | https://files.data.gouv.fr/geo-dvf/latest/csv/2021/departements/75.csv.gz | `data/dvf_75_2021.csv.gz` |
-| DVF geolocalized transactions (2022) | https://files.data.gouv.fr/geo-dvf/latest/csv/2022/departements/75.csv.gz | `data/dvf_75_2022.csv.gz` |
-| DVF geolocalized transactions (2023) | https://files.data.gouv.fr/geo-dvf/latest/csv/2023/departements/75.csv.gz | `data/dvf_75_2023.csv.gz` |
-| DVF geolocalized transactions (2024) | https://files.data.gouv.fr/geo-dvf/latest/csv/2024/departements/75.csv.gz | `data/dvf_75_2024.csv.gz` |
-| Géorisques PPRI (Seine flood polygons) | https://www.georisques.gouv.fr → search Paris PPRI → export shapefile | `data/flood_zones.shp` (+ associated files) |
-| Paris green spaces (heat proxy) | https://opendata.paris.fr → dataset "espaces verts" → GeoJSON export | `data/espaces_verts.geojson` |
+| IGN Contours IRIS (zone polygons) | `make download-iris` | `data/IRIS_SHAPES.gpkg` |
+| DVF geolocalized transactions (2021–2025) | `make download-dvf` | `data/dvf_75_<year>.csv.gz` |
+| Paris green spaces (heat proxy) | `make download-green` | `data/geo_green.geojson` |
+| Géorisques PPRI (Seine flood polygons) | manual — [georisques.gouv.fr](https://www.georisques.gouv.fr) → search Paris PPRI → export shapefile | `data/flood_zones.shp` (+ associated files) |
 
 **Folder structure once downloaded:**
 
-```
+```text
 data/
-├── CONTOURS-IRIS.shp         # + .dbf, .shx, .prj, .cpg
+├── IRIS_SHAPES.gpkg
 ├── dvf_75_2021.csv.gz
 ├── dvf_75_2022.csv.gz
 ├── dvf_75_2023.csv.gz
 ├── dvf_75_2024.csv.gz
 ├── dvf_75_2025.csv.gz
-├── flood_zones.shp           # + associated files
-├── espaces_verts.geojson
-├── synthetic.geojson         # from `make data` / 01_synthetic_data.py
-├── joined.geojson            # from 02_real_data_join.py — THE CONTRACT
-└── climateprice_output.geojson  # from 03_pipeline.py
+├── geo_green.geojson
+├── flood_zones.shp               # + associated files
+├── synthetic.geojson             # from `make synthetic-data` / src/01_synthetic_data.py
+├── joined.geojson                # from src/02_real_data_join.py — THE CONTRACT
+└── climateprice_output.geojson   # from src/03_pipeline.py
 ```
 
 ## License

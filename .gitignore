@@ -23,6 +23,7 @@ htmlcov/
 .coverage
 .env
 .envrc
+notebook.*
 
 # IDE / OS
 .vscode/
