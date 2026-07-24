@@ -29,10 +29,10 @@ jobs:
         run: ruff format --check .
 
       - name: Generate synthetic data
-        run: python 01_synthetic_data.py
+        run: python src/01_synthetic_data.py
 
       - name: Run pipeline
-        run: python 03_pipeline.py
+        run: python src/03_pipeline.py
 
       - name: Run tests (fails on any failure)
-        run: pytest test_pipeline.py -v
+        run: pytest tests/ -v
