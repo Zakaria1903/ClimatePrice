@@ -44,7 +44,7 @@ pipeline:
 	uv run python src/03_pipeline.py
 
 run: synthetic-data pipeline
-	uv run streamlit run 04_app.py
+	uv run streamlit run src/04_app.py
 
 test:
 	uv run pytest
