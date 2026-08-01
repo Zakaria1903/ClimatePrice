@@ -12,27 +12,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v5
         with:
-          python-version: "3.11"
-          cache: pip
+          enable-cache: true
 
+      # Python version comes from .python-version; deps are pinned by uv.lock,
+      # so CI installs exactly what everyone runs locally.
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install geopandas pandas numpy scikit-learn xgboost pytest ruff
+        run: uv sync --locked
 
       - name: Ruff lint (fails on any error)
-        run: ruff check .
+        run: uv run ruff check .
 
       - name: Ruff format check (fails if unformatted)
-        run: ruff format --check .
+        run: uv run ruff format --check .
 
       - name: Generate synthetic data
-        run: python src/01_synthetic_data.py
+        run: uv run python src/01_synthetic_data.py
 
       - name: Run pipeline
-        run: python src/03_pipeline.py
+        run: uv run python src/03_pipeline.py
 
       - name: Run tests (fails on any failure)
-        run: pytest tests/ -v
+        run: uv run pytest tests/ -v

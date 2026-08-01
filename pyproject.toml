@@ -12,10 +12,13 @@ dependencies = [
     "streamlit",
     "pydeck",
     "pandera>=0.32.1",
+    "py7zr>=1.1.3",
     "matplotlib>=3.10.9",
 ]
 
-[project.optional-dependencies]
+# Dev tooling lives in a PEP 735 dependency group, not an extra: `uv sync`
+# installs it by default, so nobody has to remember a flag to get ruff/pytest.
+[dependency-groups]
 dev = ["pytest", "pytest-cov", "ruff", "pre-commit"]
 
 # ============================== RUFF ==============================
@@ -45,7 +48,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"test_*.py" = ["B011"]     # assert False allowed in tests
+"tests/test_*.py" = ["B011"]     # assert False allowed in tests
 
 [tool.ruff.format]
 quote-style = "double"
@@ -59,5 +62,5 @@ addopts = "-v --tb=short"
 
 # ============================ COVERAGE ============================
 [tool.coverage.run]
-omit = ["test_*.py", "01_synthetic_data.py", "04_app.py"]
+omit = ["tests/test_*.py", "src/01_synthetic_data.py", "src/04_app.py"]
 # app excluded: Streamlit UI is checked by eyes, not coverage
