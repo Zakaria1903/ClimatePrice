@@ -11,8 +11,14 @@ CLIMATE_PATH = Path("data/climate_layers.csv")
 OUT_PATH = Path("data/joined.geojson")
 
 CONTRACT = [
-    "zone_id", "geometry", "price_m2", "heat_score",
-    "flood_score", "elevation", "dist_seine", "n_sales",
+    "zone_id",
+    "geometry",
+    "price_m2",
+    "heat_score",
+    "flood_score",
+    "elevation",
+    "dist_seine",
+    "n_sales",
 ]
 
 
