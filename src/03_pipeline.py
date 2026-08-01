@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from xgboost import XGBRegressor
 
-df = gpd.read_file("data/synthetic.geojson")
+df = gpd.read_file("data/joined.geojson")
 
 # ---- Model 1: XGBoost risk scorer ----
 df["risk"] = 0.6 * df["flood_score"] + 0.4 * df["heat_score"]
