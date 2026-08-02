@@ -124,26 +124,3 @@ An issue is Done when ALL boxes tick:
 Copy this into a GitHub issue template (`.github/ISSUE_TEMPLATE/`) so it appears automatically.
 
 ---
-
-## 9. The Process — 4 devs, 4 weeks, part-time, AI-assisted
-
-**Cadence (total ~45 min/week of process):**
-- **Async daily:** one Slack line each — yesterday / today / blocked. No meeting.
-- **Weekly 30-min sync:** demo what works, walk the ROADMAP milestones, tick CHECKLIST.md, reassign if someone's stuck.
-- **PM (Zakaria) runs the board;** each dev owns their stream end to end.
-
-**Git discipline:**
-- Small PRs (< ~300 lines) — reviewable in 10 min; giant PRs rot for days
-- Review within 24h or ping; if still stuck, PM arbitrates
-- Never break the contract silently: changing `joined.geojson` columns requires updating tests + telling the team in Slack
-
-**AI-assisted coding rules (Claude/ChatGPT/Copilot):**
-1. AI writes code, **humans own it** — you must be able to explain every merged line to the jury
-2. Paste our data contract + relevant test into the prompt — grounded output beats generic output
-3. AI-generated code passes the same gate: ruff + pytest + review. No exceptions because "the AI wrote it"
-4. Use AI *heavily* for: tests, docstrings, geopandas syntax, Streamlit boilerplate. Use it *carefully* for: formulas and thresholds (jury-facing — verify by hand)
-
-**Demo Day optimization:**
-- Week 4 = freeze (ROADMAP rule). Only fixes, polish, pitch
-- `main` must demo at any moment from week 2 — practice `git clone && make run` on a clean machine once
-- Screenshot the green CI + 20/20 pytest wall for the deck: 10 seconds of slide, big credibility
