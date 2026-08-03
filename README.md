@@ -89,12 +89,12 @@ If you don't have uv yet: `curl -LsSf https://astral.sh/uv/install.sh | sh`.
 # On synthetic data (works immediately, no downloads):
 uv run python src/01_synthetic_data.py
 uv run python src/03_pipeline.py
-uv run streamlit run 04_app.py
+uv run streamlit src/run 04_app.py
 
 # On real data (after downloading the sources — see "Data downloads" below):
 uv run python src/02_real_data_join.py
 uv run python src/03_pipeline.py
-uv run streamlit run 04_app.py
+uv run streamlit src/run 04_app.py
 ```
 
 Equivalent shortcut for the synthetic path: `make run`.
