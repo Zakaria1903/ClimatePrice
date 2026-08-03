@@ -30,6 +30,9 @@ jobs:
       - name: Generate synthetic data
         run: uv run python src/01_synthetic_data.py
 
+      - name: Use synthetic as joined (CI has no real data)
+        run: cp data/synthetic.geojson data/joined.geojson
+
       - name: Run pipeline
         run: uv run python src/03_pipeline.py
 
