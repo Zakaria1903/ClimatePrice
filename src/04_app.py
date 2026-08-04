@@ -4,70 +4,79 @@ import geopandas as gpd
 import pydeck as pdk
 import streamlit as st
 
-# ---- Page configuration ----
-
+# Page configuration
 st.set_page_config(
     page_title="ClimatePrice",
     page_icon="🏠",
     layout="wide",
 )
-
 st.title("🏠 ClimatePrice")
 st.subheader("Where should you buy property in Paris today to be safe in 2035/2045?")
 
-# ---- Load pipeline output ----
+# FIX 5: intro line for first-time visitors
+st.caption(
+    "Each Paris IRIS neighborhood gets a verdict Buy / Caution / Avoid based on "
+    "flood and heat exposure. Pick a climate scenario and horizon in the sidebar; "
+    "hover any zone for details."
+)
 
+# Load pipeline output
 DATA_PATH = Path("data/climateprice_output.geojson")
 if not DATA_PATH.exists():
     st.error("Pipeline output not found. Run `python src/03_pipeline.py` first.")
     st.stop()
-
 gdf = gpd.read_file(DATA_PATH)
 
-
-# ---- Scenario controls ----
-
+# Scenario controls
 st.sidebar.header("Climate scenario")
-scenario = st.sidebar.selectbox(
+# FIX 3: official scenario names (display labels only, internal values unchanged)
+scenario_label = st.sidebar.selectbox(
     "Scenario",
-    ["SSP2", "SSP5"],
+    ["SSP2-4.5 (moderate)", "SSP5-8.5 (worst case)"],
 )
-
+scenario = "SSP2" if "SSP2" in scenario_label else "SSP5"
 horizon = st.sidebar.selectbox(
     "Horizon",
     ["2035", "2045"],
 )
 
-
-# ---- Select scenario-specific columns ----
-
+# Select scenario-specific columns
 verdict_col = f"verdict_{scenario}_{horizon}"
 discount_col = f"discount_{scenario}_{horizon}"
-future_price_col = f"price_future_{scenario}_{horizon}"
 
-# ---- Headline counters ----
-
-st.subheader(f"Paris outlook — {scenario} / {horizon}")
+# Headline counters
+st.subheader(f"Paris outlook {scenario_label} / {horizon}")
 counts = gdf[verdict_col].value_counts()
 buy_count = counts.get("Buy", 0)
 caution_count = counts.get("Caution", 0)
 avoid_count = counts.get("Avoid", 0)
 col1, col2, col3 = st.columns(3)
-
 col1.metric("🟢 Buy", buy_count)
 col2.metric("🟡 Caution", caution_count)
 col3.metric("🔴 Avoid", avoid_count)
 
-# ---- Interactive map ----
-
+# Interactive map
 st.subheader("Investment map")
-
-# Prepare map data
 map_gdf = gdf.to_crs(epsg=4326).copy()
 map_gdf["selected_verdict"] = map_gdf[verdict_col]
 map_gdf["selected_discount"] = (map_gdf[discount_col] * 100).round(1)
-map_gdf["selected_future_price"] = (map_gdf[future_price_col]).round(0)
+
+# FIX 1: apply the discount to the OBSERVED price for display coherence
+# (the pipeline's baseline price is flood-blind by design — correct internally,
+#  but confusing next to the observed price in a tooltip)
+map_gdf["selected_future_price"] = (
+    (map_gdf["price_m2"] * (1 - map_gdf[discount_col])).round(0).astype(int)
+)
+
+# FIX 2: integer price display (no more 12 decimals)
+map_gdf["price_display"] = map_gdf["price_m2"].round(0).astype(int)
+
 map_gdf["risk_score_display"] = (map_gdf["risk_score"]).round(1)
+
+# FIX 4: human-readable arrondissement derived from zone_id
+map_gdf["arrondissement"] = (
+    map_gdf["zone_id"].astype(str).str[3:5].astype(int).astype(str) + "e arr."
+)
 
 # Assign map colors to each verdict
 color_map = {
@@ -75,10 +84,8 @@ color_map = {
     "Caution": [234, 179, 8, 180],
     "Avoid": [239, 68, 68, 180],
 }
-
 map_gdf["color"] = map_gdf["selected_verdict"].map(color_map)
 
-# Create polygon layer
 layer = pdk.Layer(
     "GeoJsonLayer",
     data=map_gdf.__geo_interface__,
@@ -90,7 +97,6 @@ layer = pdk.Layer(
     line_width_min_pixels=1,
 )
 
-# Center map on Paris
 view_state = pdk.ViewState(
     latitude=48.8566,
     longitude=2.3522,
@@ -98,12 +104,11 @@ view_state = pdk.ViewState(
     pitch=0,
 )
 
-# Zone information shown on hover
 tooltip = {
     "html": """
-        <b>Zone {zone_id}</b><br/><br/>
+        <b>Zone {zone_id} — {arrondissement}</b><br/><br/>
         Verdict: <b>{selected_verdict}</b><br/>
-        Current price: €{price_m2} / m²<br/>
+        Current price: €{price_display} / m²<br/>
         Climate-adjusted price: €{selected_future_price} / m²<br/>
         Climate discount: {selected_discount}%<br/>
         Risk score: {risk_score_display} / 100<br/>
@@ -120,10 +125,8 @@ deck = pdk.Deck(
     initial_view_state=view_state,
     tooltip=tooltip,
 )
-
 st.pydeck_chart(
     deck,
     use_container_width=True,
 )
-
 st.caption("🟢 Buy  ·  🟡 Caution  ·  🔴 Avoid")
