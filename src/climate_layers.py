@@ -92,9 +92,8 @@ def compute_heat_layer(
 
 if __name__ == "__main__":
     # Manual run on real files once downloaded (adjust filenames if needed):
-    zones = gpd.read_file("data/CONTOURS-IRIS.shp")
-    zones = zones[zones["INSEE_COM"].astype(str).str.startswith("75")].copy()
-    zones = zones.rename(columns={"CODE_IRIS": "zone_id"})
+    zones = gpd.read_file("data/IRIS_SHAPES.gpkg")
+    zones = zones.rename(columns={"code_iris": "zone_id"})
     print(f"zones: {len(zones)} (expect ~992)")
 
     flood = gpd.read_file("data/flood_zones.shp")
@@ -102,7 +101,7 @@ if __name__ == "__main__":
     print(flood_df.describe())
 
     try:
-        green = gpd.read_file("data/espaces_verts.geojson")
+        green = gpd.read_file("data/geo_green.geojson")
     except Exception:
         print("green-space file missing -> flat UHI fallback")
         green = None
