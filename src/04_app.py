@@ -13,7 +13,6 @@ st.set_page_config(
 st.title("🏠 ClimatePrice")
 st.subheader("Where should you buy property in Paris today to be safe in 2035/2045?")
 
-# FIX 5: intro line for first-time visitors
 st.caption(
     "Each Paris IRIS neighborhood gets a verdict Buy / Caution / Avoid based on "
     "flood and heat exposure. Pick a climate scenario and horizon in the sidebar; "
@@ -29,7 +28,6 @@ gdf = gpd.read_file(DATA_PATH)
 
 # Scenario controls
 st.sidebar.header("Climate scenario")
-# FIX 3: official scenario names (display labels only, internal values unchanged)
 scenario_label = st.sidebar.selectbox(
     "Scenario",
     ["SSP2-4.5 (moderate)", "SSP5-8.5 (worst case)"],
@@ -40,45 +38,30 @@ horizon = st.sidebar.selectbox(
     ["2035", "2045"],
 )
 
-# Select scenario-specific columns
 verdict_col = f"verdict_{scenario}_{horizon}"
 discount_col = f"discount_{scenario}_{horizon}"
+future_price_col = f"price_future_{scenario}_{horizon}"
 
 # Headline counters
 st.subheader(f"Paris outlook {scenario_label} / {horizon}")
 counts = gdf[verdict_col].value_counts()
-buy_count = counts.get("Buy", 0)
-caution_count = counts.get("Caution", 0)
-avoid_count = counts.get("Avoid", 0)
 col1, col2, col3 = st.columns(3)
-col1.metric("🟢 Buy", buy_count)
-col2.metric("🟡 Caution", caution_count)
-col3.metric("🔴 Avoid", avoid_count)
+col1.metric("🟢 Buy", counts.get("Buy", 0))
+col2.metric("🟡 Caution", counts.get("Caution", 0))
+col3.metric("🔴 Avoid", counts.get("Avoid", 0))
 
 # Interactive map
 st.subheader("Investment map")
 map_gdf = gdf.to_crs(epsg=4326).copy()
 map_gdf["selected_verdict"] = map_gdf[verdict_col]
 map_gdf["selected_discount"] = (map_gdf[discount_col] * 100).round(1)
-
-# FIX 1: apply the discount to the OBSERVED price for display coherence
-# (the pipeline's baseline price is flood-blind by design — correct internally,
-#  but confusing next to the observed price in a tooltip)
-map_gdf["selected_future_price"] = (
-    (map_gdf["price_m2"] * (1 - map_gdf[discount_col])).round(0).astype(int)
-)
-
-# FIX 2: integer price display (no more 12 decimals)
+map_gdf["selected_future_price"] = map_gdf[future_price_col].round(0).astype(int)
 map_gdf["price_display"] = map_gdf["price_m2"].round(0).astype(int)
-
-map_gdf["risk_score_display"] = (map_gdf["risk_score"]).round(1)
-
-# FIX 4: human-readable arrondissement derived from zone_id
+map_gdf["risk_score_display"] = map_gdf["risk_score"].round(1)
 map_gdf["arrondissement"] = (
     map_gdf["zone_id"].astype(str).str[3:5].astype(int).astype(str) + "e arr."
 )
 
-# Assign map colors to each verdict
 color_map = {
     "Buy": [34, 197, 94, 180],
     "Caution": [234, 179, 8, 180],
@@ -97,12 +80,7 @@ layer = pdk.Layer(
     line_width_min_pixels=1,
 )
 
-view_state = pdk.ViewState(
-    latitude=48.8566,
-    longitude=2.3522,
-    zoom=11,
-    pitch=0,
-)
+view_state = pdk.ViewState(latitude=48.8566, longitude=2.3522, zoom=11, pitch=0)
 
 tooltip = {
     "html": """
@@ -120,13 +98,6 @@ tooltip = {
     },
 }
 
-deck = pdk.Deck(
-    layers=[layer],
-    initial_view_state=view_state,
-    tooltip=tooltip,
-)
-st.pydeck_chart(
-    deck,
-    use_container_width=True,
-)
+deck = pdk.Deck(layers=[layer], initial_view_state=view_state, tooltip=tooltip)
+st.pydeck_chart(deck, use_container_width=True)
 st.caption("🟢 Buy  ·  🟡 Caution  ·  🔴 Avoid")
