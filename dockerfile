@@ -12,8 +12,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy project files
 COPY pyproject.toml .
 COPY src/ ./src/
+COPY data/climateprice_output.geojson ./data/climateprice_output.geojson
 
-# Install runtime Python dependencies directly from pyproject
+# Install runtime Python dependencies
 RUN pip install --no-cache-dir \
     geopandas \
     pandas \
@@ -25,11 +26,6 @@ RUN pip install --no-cache-dir \
     "pandera>=0.32.1" \
     "py7zr>=1.1.3" \
     "matplotlib>=3.10.9"
-
-# Create data and generate the synthetic MVP output
-RUN mkdir -p data && \
-    python src/01_synthetic_data.py && \
-    python src/03_pipeline.py
 
 ENV PORT=8080
 
